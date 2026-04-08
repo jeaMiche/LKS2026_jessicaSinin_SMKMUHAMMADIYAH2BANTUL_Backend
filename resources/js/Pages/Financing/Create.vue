@@ -9,10 +9,12 @@ const props = defineProps({
 })
 
 const form = useForm({
-    amount:       '',
+    name: '',          
+    business_name: '', 
+    amount: '',
     tenor_months: '12',
-    purpose:      '',
-    omzet:        props.revenue,
+    purpose: '',
+    omzet: props.revenue,
 })
 
 

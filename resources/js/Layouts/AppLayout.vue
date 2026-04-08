@@ -18,10 +18,6 @@ const menus = computed(() => {
         base.push({ label: 'Data UMKM', href: route('profile.edit') })
     }
 
-    if (user.value.role === 'admin') {
-        base.push({ label: 'Data Terhapus', href: route('financing.trashed') })
-    }
-
     return base
 })
 

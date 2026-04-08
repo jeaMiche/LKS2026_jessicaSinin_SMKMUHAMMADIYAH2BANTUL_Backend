@@ -16,7 +16,6 @@ class BusinessVerificationController extends Controller
             'notes'  => 'nullable|string'
         ]);
 
-        // Simpan data verifikasi
         BusinessVerification::create([
             'financing_application_id' => $application->id,
             'verified_by'              => auth()->id(),
@@ -24,7 +23,6 @@ class BusinessVerificationController extends Controller
             'notes'                    => $request->notes,
         ]);
 
-        // Update status aplikasi & catat log
         $oldStatus = $application->status;
         $application->update(['status' => $request->status]);
 

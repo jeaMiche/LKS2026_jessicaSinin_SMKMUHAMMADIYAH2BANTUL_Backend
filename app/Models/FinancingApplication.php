@@ -10,16 +10,30 @@ class FinancingApplication extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $fillable = [
-        'user_id', 'amount', 'tenor_months', 'interest_rate', 'omzet', 
-        'purpose', 'status', 'approved_at'
+        'id',
+        'user_id',
+        'business_verification_id',
+        'omzet',
+        'jumlah_pembiayaan',
+        'tenor_bulan',
+        'tujuan_pembiayaan', 
+        'status',
+        'skor_kelayakan',
+        'rekomendasi_limit',
+        'catatan_analisis',
+        'submitted_at',
+        'approved_at',
+        'rejected_reason'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
 
     public function logs()
     {
@@ -30,7 +44,6 @@ class FinancingApplication extends Model
     {
         return $this->hasOne(BusinessVerification::class);
     }
-
 
     public function installments()
     {

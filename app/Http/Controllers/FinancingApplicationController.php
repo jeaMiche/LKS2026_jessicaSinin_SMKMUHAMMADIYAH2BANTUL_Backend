@@ -41,32 +41,30 @@ class FinancingApplicationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'business_name' => 'required|string|max:255',
             'amount' => 'required|numeric|min:1000000',
             'tenor_months' => 'required|integer',
             'purpose' => 'required|string',
-            'omzet' => 'required|numeric|min:1',
+            'omzet' => 'required|numeric',
         ]);
 
+        $user = auth()->user();
 
-        $rate = 6;
-        $totalInterest = ($request->amount * $rate / 100) * ($request->tenor_months / 12);
-        $totalPayable = $request->amount + $totalInterest;
-        $monthly = round($totalPayable / $request->tenor_months);
+        $verification = \App\Models\BusinessVerification::where('user_id', $user->id)->first();
+
+        if (!$verification) {
+            return back()->withErrors(['error' => 'Anda harus melakukan verifikasi bisnis terlebih dahulu.']);
+        }
 
         $app = FinancingApplication::create([
-            'id' => Str::uuid(),
-            'name' => $request->name,
-            'business_name' => $request->business_name,
-            'amount' => $request->amount,
+            'id' => \Illuminate\Support\Str::uuid(),
+            'user_id' => $user->id,
+            'business_verification_id' => $verification->id, 
             'omzet' => $request->omzet,
-            'tenor_months' => $request->tenor_months,
-            'interest_rate' => $rate,
-            'monthly_installment' => $monthly,
-            'outstanding_balance' => $totalPayable,
-            'purpose' => $request->purpose,
-            'status' => 'pending'
+            'jumlah_pembiayaan' => $request->amount,     
+            'tenor_bulan' => $request->tenor_months, 
+            'tujuan_pembiayaan' => $request->purpose,   
+            'status' => 'submitted',         
+            'submitted_at' => now(),
         ]);
 
         return redirect()->route('financing.show', $app->id);
