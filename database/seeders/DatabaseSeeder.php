@@ -18,10 +18,10 @@ class DatabaseSeeder extends Seeder
                 'monthly_revenue' => 100_000_000,
             ],
             [
-                'name'            => 'Borrower LKS',
-                'email'           => 'borrower@lks.test',
+                'name'            => 'Applicant LKS',
+                'email'           => 'applicant@lks.test',
                 'password'        => 'password',
-                'role'            => 'borrower',
+                'role'            => 'applicant',
                 'business_name'   => 'UD Maju Jaya',
                 'monthly_revenue' => 50_000_000,
             ],

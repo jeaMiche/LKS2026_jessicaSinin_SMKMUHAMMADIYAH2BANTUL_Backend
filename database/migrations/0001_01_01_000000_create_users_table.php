@@ -13,7 +13,9 @@ return new class extends Migration
             $table->string('name');                         
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'applicant', 'verifier', 'analyst', 'manager']); 
+            $table->enum('role', ['admin', 'applicant', 'verifier', 'analyst', 'manager'])->default('applicant'); 
+            $table->string('business_name')->nullable();
+            $table->string('monthly_revenue')->nullable();
             $table->timestamps();
             $table->softDeletes();                      
         });

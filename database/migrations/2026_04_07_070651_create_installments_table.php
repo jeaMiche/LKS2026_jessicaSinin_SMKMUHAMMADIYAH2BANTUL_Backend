@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('installments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('financing_application_id')   
+            $table->foreignUuid('financing_application_id')
                   ->constrained('financing_applications')
                   ->cascadeOnDelete();
 
@@ -20,19 +20,11 @@ return new class extends Migration
             $table->bigInteger('nominal_bunga');
             $table->bigInteger('total_cicilan');
 
-            $table->enum('status', [
-                'unpaid',
-                'paid',
-            ])->default('unpaid');                        
-
+            $table->enum('status', ['unpaid', 'paid'])->default('unpaid');                        
             $table->timestamp('paid_at')->nullable();       
 
-           
-
             $table->timestamps();
-            $table->softDeletes();
         });
-
     }
 
     public function down(): void

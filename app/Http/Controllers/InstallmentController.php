@@ -2,64 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\installment;
+use App\Models\Installment;
 use Illuminate\Http\Request;
 
 class InstallmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function pay(Request $request, Installment $installment)
     {
-        //
-    }
+        // Validasi pembayaran cicilan
+        $installment->update([
+            'status'       => 'paid',
+            'paid_at'      => now(),
+            'payment_method' => $request->method ?? 'transfer',
+        ]);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        // Opsional: Cek apakah semua cicilan sudah lunas untuk update status FinancingApplication
+        $application = $installment->financingApplication;
+        $remaining = $application->installments()->where('status', 'unpaid')->count();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        if ($remaining === 0) {
+            $application->update(['status' => 'lunas']);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(installment $installment)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(installment $installment)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, installment $installment)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(installment $installment)
-    {
-        //
+        return back()->with('success', 'Cicilan berhasil dibayar.');
     }
 }

@@ -11,7 +11,7 @@ return new class extends Migration {
         Schema::create('business_verifications', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-            $table->string('nama_usaha'); 
+            $table->string('business_name'); 
             $table->string('nib');
             $table->string('npwp');
             $table->bigInteger('omzet_bulanan');   

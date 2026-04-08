@@ -2,64 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Business_verification;
+use App\Models\FinancingApplication;
+use App\Models\BusinessVerification;
+use App\Models\ApplicationLog;
 use Illuminate\Http\Request;
 
 class BusinessVerificationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function verify(Request $request, FinancingApplication $application)
     {
-        //
-    }
+        $request->validate([
+            'status' => 'required|in:verified,rejected',
+            'notes'  => 'nullable|string'
+        ]);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        // Simpan data verifikasi
+        BusinessVerification::create([
+            'financing_application_id' => $application->id,
+            'verified_by'              => auth()->id(),
+            'status'                   => $request->status,
+            'notes'                    => $request->notes,
+        ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        // Update status aplikasi & catat log
+        $oldStatus = $application->status;
+        $application->update(['status' => $request->status]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Business_verification $business_verification)
-    {
-        //
-    }
+        ApplicationLog::create([
+            'financing_application_id' => $application->id,
+            'status_before'            => $oldStatus,
+            'status_after'             => $request->status,
+            'note'                     => 'Verifikasi Bisnis: ' . $request->notes,
+            'created_by'               => auth()->id(),
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Business_verification $business_verification)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Business_verification $business_verification)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Business_verification $business_verification)
-    {
-        //
+        return back()->with('success', 'Verifikasi berhasil diproses.');
     }
 }
